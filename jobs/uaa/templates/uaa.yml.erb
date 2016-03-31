@@ -41,7 +41,7 @@ name: uaa
 <% uaa_role = uaadb_config["roles"].find { |role| role["tag"] == "admin" } %>
 
 database:
-  url: jdbc:<%= uaadb_config["db_scheme"] %>://<%= uaadb_config["address"] %>:<%= uaadb_config["port"] %>/<%= uaadb["name"] %>
+  url: jdbc:<%= uaadb_config["db_scheme"] %>://<%= uaadb_config["address"] %>:<%= uaadb_config["port"] %>/<%= uaa_db["name"] %>
   username: <%= uaa_role["name"] %>
   password: "<%= uaa_role["password"] %>"
   maxactive: <%= uaadb_config["max_connections"] %>
