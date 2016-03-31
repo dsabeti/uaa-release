@@ -1,7 +1,5 @@
 ---
 <%
-  uaa_db = properties.uaadb.databases.find { |db| db.tag == "uaa" }
-  uaa_role = properties.uaadb.roles.find { |role| role.tag == "admin" }
   protocol = properties.login.protocol
   issuer_uri = p("uaa.issuer", p("uaa.url", "#{protocol}://uaa.#{properties.domain}"))
   oauth_clientsLoginRedirectUri = "#{protocol}://login.#{properties.domain}"
@@ -24,17 +22,29 @@
 %>
 
 name: uaa
+<%
+  uaadb_config = nil
+  if_link("uaadb") do |uaadb|
+    uaadb_config = {}
+    uaadb_config["db_scheme"] = uaadb.p("databases.db_scheme")
+    uaadb_config["port"] = uaadb.p("databases.port")
+    uaadb_config["address"] = uaadb.p("databases.address")
+    uaadb_config["max_connections"] = uaadb.p("databases.max_connections")
+    uaadb_config["roles"] = uaadb.p("databases.roles")
+    uaadb_config["databases"] = uaadb.p("databases.databases")
+  end
+
+  uaadb_config = p("uaadb") unless uaadb_config
+%>
+
+<% uaa_db = uaadb_config["databases"].find { |db| db["tag"] == "uaa" } %>
+<% uaa_role = uaadb_config["roles"].find { |role| role["tag"] == "admin" } %>
 
 database:
-  url: jdbc:<%= properties.uaadb.db_scheme %>://<%= properties.uaadb.address %>:<%= properties.uaadb.port %>/<%= uaa_db.name %>
-  username: <%= uaa_role.name %>
-  password: "<%= uaa_role.password %>"
-  maxactive: <%= properties.uaa.database.max_connections %>
-  maxidle:  <%= properties.uaa.database.max_idle_connections %>
-  removeabandoned: <%= properties.uaa.database.remove_abandoned %>
-  logabandoned: <%= properties.uaa.database.log_abandoned %>
-  abandonedtimeout: <%= properties.uaa.database.abandoned_timeout %>
-  <%= (properties.uaa.database && !(properties.uaa.database.case_insensitive.nil?)) ? 'caseinsensitive: ' + properties.uaa.database.case_insensitive.to_s : '' %>
+  url: jdbc:<%= uaadb_config["db_scheme"] %>://<%= uaadb_config["address"] %>:<%= uaadb_config["port"] %>/<%= uaadb["name"] %>
+  username: <%= uaa_role["name"] %>
+  password: "<%= uaa_role["password"] %>"
+  maxactive: <%= uaadb_config["max_connections"] %>
 
 <% if properties.uaa && properties.uaa.ldap && ((properties.uaa.ldap.enabled &&  (properties.uaa.ldap.enabled==true)) || (properties.uaa.spring_profiles && properties.uaa.spring_profiles.eql?('ldap'))) %>
 spring_profiles: <%= properties.uaadb.db_scheme %>,ldap

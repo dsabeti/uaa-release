@@ -1,6 +1,17 @@
 ---
 name: uaa_postgres
 
+provides:
+- name: conn
+  type: db
+  properties:
+  - databases.db_scheme
+  - databases.port
+  - databases.address
+  - databases.roles
+  - databases.databases
+  - databases.max_connections
+
 description: "The Postgres server provides a single instance Postgres database that can be used with the Cloud Controller or the UAA. It does not provide highly-available configuration."
 
 templates:
