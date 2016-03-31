@@ -47,13 +47,13 @@ database:
   maxactive: <%= uaadb_config["max_connections"] %>
 
 <% if properties.uaa && properties.uaa.ldap && ((properties.uaa.ldap.enabled &&  (properties.uaa.ldap.enabled==true)) || (properties.uaa.spring_profiles && properties.uaa.spring_profiles.eql?('ldap'))) %>
-spring_profiles: <%= properties.uaadb.db_scheme %>,ldap
+spring_profiles: <%= uaadb_config["db_scheme"] %>,ldap
 <% elsif properties.uaa && properties.uaa.spring_profiles && properties.uaa.spring_profiles.include?('ldap') && properties.uaa.ldap %>
-spring_profiles: <%= properties.uaa.spring_profiles ? properties.uaa.spring_profiles : properties.uaadb.db_scheme %>
+spring_profiles: <%= properties.uaa.spring_profiles ? properties.uaa.spring_profiles : uaadb_config["db_scheme"] %>
 <% elsif properties.login && properties.login.spring_profiles && properties.login.spring_profiles.include?('ldap') &&  properties.login.ldap && properties.login.ldap.profile_type %>
-spring_profiles: <%= properties.uaadb.db_scheme %>,ldap
+spring_profiles: <%= uaadb_config["db_scheme"] %>,ldap
 <% else %>
-spring_profiles: <%= properties.uaadb.db_scheme %>
+spring_profiles: <%= uaadb_config["db_scheme"] %>
 <% end %>
 
 logging:
