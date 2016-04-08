@@ -18,8 +18,8 @@
     end
     # Look up Router IPs
     if properties.uaa.proxy && properties.uaa.proxy.servers
-      properties.uaa.proxy.servers.each_with_index do |ip, index|
-        regExIp = ip.gsub(".","\\.").gsub(":","\\:")
+      link("gorouter").instances.each do |instance|
+        regExIp = instance.address.gsub(".","\\.").gsub(":","\\:")
         internalProxies = regExIp  + "|" + internalProxies
       end
     end

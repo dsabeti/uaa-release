@@ -28,7 +28,7 @@ name: uaa
     uaadb_config = {}
     uaadb_config["db_scheme"] = uaadb.p("databases.db_scheme")
     uaadb_config["port"] = uaadb.p("databases.port")
-    uaadb_config["address"] = uaadb.p("databases.address")
+    uaadb_config["address"] = uaadb.instances.first.address
     uaadb_config["max_connections"] = uaadb.p("databases.max_connections")
     uaadb_config["roles"] = uaadb.p("databases.roles")
     uaadb_config["databases"] = uaadb.p("databases.databases")
